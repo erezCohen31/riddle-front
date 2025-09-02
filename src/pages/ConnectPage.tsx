@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router";
+import { RoleContext } from "../contexts/Role.context";
 
 export default function LoginPage() {
   const [form, setForm] = useState({ username: "", password: "" });
@@ -10,6 +11,9 @@ export default function LoginPage() {
     const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
+  const context = useContext(RoleContext);
+
+  const { setRole } = context;
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -17,8 +21,8 @@ export default function LoginPage() {
     if (form.username === "admin" && form.password === "1234") {
       navigate("/main-menu", {
         state: { username: form.username },
-        replace: true,
       });
+      setRole("admin");
     } else {
       alert("Login incorrect !");
     }
