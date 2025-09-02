@@ -1,36 +1,40 @@
 import { useContext } from "react";
 import { RoleContext } from "../contexts/Role.context";
-import { useNavigate } from "react-router";
+import { Outlet, useNavigate } from "react-router";
 
 export default function ModifyRiddlePage() {
-  const context = useContext(RoleContext);
-  const { role } = context;
+  const { role } = useContext(RoleContext);
   const navigate = useNavigate();
 
-  function handleSubmit(destination: string) {
-    navigate(`/${destination}`);
-  }
+  const handleNavigate = (path: string) => {
+    navigate(path);
+  };
 
   return (
-    <>
-      <div>ModifyRiddlePage</div>
+    <div>
+      <h1>Modify Riddle Page</h1>
 
       {(role === "user" || role === "admin") && (
-        <button onClick={() => handleSubmit("manage-riddles")}>
-          Create a new Riddle
-        </button>
-      )}
-      {(role === "user" || role === "admin") && (
-        <button onClick={() => handleSubmit("manage-riddles")}>
-          Read all Riddles
-        </button>
+        <>
+          <button onClick={() => handleNavigate("add")}>
+            Create a new Riddle
+          </button>
+          <button onClick={() => handleNavigate("read")}>
+            Read all Riddles
+          </button>
+        </>
       )}
 
       {role === "admin" && (
-        <button onClick={() => handleSubmit("manage-players")}>
-          Change Riddle
-        </button>
+        <>
+          <button onClick={() => handleNavigate("edit")}>Change Riddle</button>
+          <button onClick={() => handleNavigate("delete")}>
+            Delete Riddle
+          </button>
+        </>
       )}
-    </>
+
+      <Outlet />
+    </div>
   );
 }
