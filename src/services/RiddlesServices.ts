@@ -30,3 +30,17 @@ export async function addRiddle(
 
   return await handleResponse<Riddle>(response);
 }
+
+export async function getNumOfRiddles(
+  count: number,
+  token: string
+): Promise<Riddle[]> {
+  const response = await fetch(`${API_URL}/count/${count}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return (await handleResponse<Riddle[]>(response)) ?? [];
+}
