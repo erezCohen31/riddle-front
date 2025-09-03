@@ -11,7 +11,7 @@ export default function ModifyRiddlePage() {
   };
 
   return (
-    <div>
+    <div className="container-game">
       <h1>Modify Riddle Page</h1>
 
       {(player?.role === "user" || player?.role === "admin") && (

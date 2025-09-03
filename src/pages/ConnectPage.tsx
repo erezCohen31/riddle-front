@@ -47,29 +47,31 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="connect-page">
+    <div className="container-game">
       <h1>Welcome to Riddle Game</h1>
-      <form onSubmit={handleSubmit}>
+      <form className="connect-form" onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="username">Enter your username:</label>
+          <label htmlFor="username"></label>
           <input
             id="username"
             name="username"
             type="text"
             value={form.username}
             onChange={handleChange}
+            placeholder="username"
             required
           />
         </div>
 
         <div>
-          <label htmlFor="password">Enter your password:</label>
+          <label htmlFor="password"></label>
           <input
             id="password"
             name="password"
             type="password"
             value={form.password}
             onChange={handleChange}
+            placeholder="password"
             required
           />
         </div>

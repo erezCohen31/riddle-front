@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { RoleContext } from "../contexts/Player.context";
 import { useNavigate } from "react-router";
+import "../style/MainMenu.css";
 
 export default function MainMenuPage() {
   const context = useContext(RoleContext);
@@ -12,8 +13,7 @@ export default function MainMenuPage() {
   }
 
   return (
-    <>
-      <div>MainMenuPage</div>
+    <div className="container-game">
       <h2>Welcome {player?.name}</h2>
       {player?.lowestTime && <p>your lowest time is {player.lowestTime}</p>}
       <button onClick={() => handleSubmit("play")}>To Play</button>
@@ -30,6 +30,6 @@ export default function MainMenuPage() {
           Manage Players
         </button>
       )}
-    </>
+    </div>
   );
 }
