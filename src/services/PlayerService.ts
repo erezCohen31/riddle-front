@@ -1,3 +1,5 @@
+import type { Player } from "../interface/PlayerType";
+
 const API_URL = "https://riddle-game-api.onrender.com/api/players";
 
 async function handleResponse(response: Response) {
@@ -12,7 +14,10 @@ async function handleResponse(response: Response) {
   return text ? JSON.parse(text) : null;
 }
 
-export async function createOrFindPlayer(name: string, password: string) {
+export async function createOrFindPlayer(
+  name: string,
+  password: string
+): Promise<Player> {
   if (!name || typeof name !== "string" || name.trim().length === 0) {
     throw new Error("Player name is required");
   }
@@ -35,4 +40,21 @@ export async function createOrFindPlayer(name: string, password: string) {
   });
 
   return handleResponse(response);
+}
+
+export async function updateTime(id: number, time: number, token: string) {
+  if (!id || !time || isNaN(time)) {
+    throw new Error("Valid player ID and time are required");
+  }
+
+  const response = await fetch(`${API_URL}/${id}/time`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ time: Number(time) }),
+  });
+
+  return await handleResponse(response);
 }
