@@ -1,5 +1,3 @@
-import type { Player } from "../interface/PlayerType";
-
 const API_URL = "https://riddle-game-api.onrender.com/api/players";
 
 async function handleResponse(response: Response) {
@@ -14,10 +12,7 @@ async function handleResponse(response: Response) {
   return text ? JSON.parse(text) : null;
 }
 
-export async function createOrFindPlayer(
-  name: string,
-  password: string
-): Promise<Player> {
+export async function createOrFindPlayer(name: string, password: string) {
   if (!name || typeof name !== "string" || name.trim().length === 0) {
     throw new Error("Player name is required");
   }
