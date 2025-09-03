@@ -1,9 +1,9 @@
 import { useContext } from "react";
-import { RoleContext } from "../contexts/Role.context";
+import { RoleContext } from "../contexts/Player.context";
 import { Outlet, useNavigate } from "react-router";
 
 export default function ModifyRiddlePage() {
-  const { role } = useContext(RoleContext);
+  const { player } = useContext(RoleContext);
   const navigate = useNavigate();
 
   const handleNavigate = (path: string) => {
@@ -14,7 +14,7 @@ export default function ModifyRiddlePage() {
     <div>
       <h1>Modify Riddle Page</h1>
 
-      {(role === "user" || role === "admin") && (
+      {(player?.role === "user" || player?.role === "admin") && (
         <>
           <button onClick={() => handleNavigate("add")}>
             Create a new Riddle
@@ -25,7 +25,7 @@ export default function ModifyRiddlePage() {
         </>
       )}
 
-      {role === "admin" && (
+      {player?.role === "admin" && (
         <>
           <button onClick={() => handleNavigate("edit")}>Change Riddle</button>
           <button onClick={() => handleNavigate("delete")}>

@@ -1,7 +1,10 @@
 import { useState, type FormEvent } from "react";
+import { addRiddle } from "../services/RiddlesServices";
+import type { Riddle } from "../interface/RiddleType";
+import type { FormRiddle } from "../interface/FormRiddleType.ts";
 
 export default function CreateRiddlePage() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormRiddle>({
     riddlename: "",
     question: "",
     correctAnswer: "",
@@ -11,18 +14,57 @@ export default function CreateRiddlePage() {
     fourthOption: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log("Submitted riddle:", formData);
+    setLoading(true);
+    setError("");
+
+    try {
+      const token = localStorage.getItem("token") || "";
+
+      const riddleData: Riddle = {
+        id: Date.now(),
+        name: formData.riddlename,
+        taskDescription: formData.question,
+        correctAnswer: formData.correctAnswer,
+        choices: [
+          formData.firstOption,
+          formData.secondOption,
+          formData.thirdOption,
+          formData.fourthOption,
+        ],
+      };
+
+      await addRiddle(riddleData, token);
+
+      alert("Riddle added successfully!");
+      setFormData({
+        riddlename: "",
+        question: "",
+        correctAnswer: "",
+        firstOption: "",
+        secondOption: "",
+        thirdOption: "",
+        fourthOption: "",
+      });
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <>
+    <div className="connect-page">
       <div>CreateRiddlePage</div>
       <form onSubmit={handleSubmit}>
         <div>
@@ -33,9 +75,9 @@ export default function CreateRiddlePage() {
             type="text"
             value={formData.riddlename}
             onChange={handleChange}
+            required
           />
         </div>
-
         <div>
           <label htmlFor="question">Enter the question:</label>
           <input
@@ -44,9 +86,9 @@ export default function CreateRiddlePage() {
             type="text"
             value={formData.question}
             onChange={handleChange}
+            required
           />
         </div>
-
         <div>
           <label htmlFor="correctAnswer">Enter the correct answer:</label>
           <input
@@ -55,9 +97,9 @@ export default function CreateRiddlePage() {
             type="text"
             value={formData.correctAnswer}
             onChange={handleChange}
+            required
           />
         </div>
-
         <div>
           <label htmlFor="firstOption">Enter the first option:</label>
           <input
@@ -66,9 +108,9 @@ export default function CreateRiddlePage() {
             type="text"
             value={formData.firstOption}
             onChange={handleChange}
+            required
           />
         </div>
-
         <div>
           <label htmlFor="secondOption">Enter the second option:</label>
           <input
@@ -77,9 +119,9 @@ export default function CreateRiddlePage() {
             type="text"
             value={formData.secondOption}
             onChange={handleChange}
+            required
           />
         </div>
-
         <div>
           <label htmlFor="thirdOption">Enter the third option:</label>
           <input
@@ -88,9 +130,9 @@ export default function CreateRiddlePage() {
             type="text"
             value={formData.thirdOption}
             onChange={handleChange}
+            required
           />
         </div>
-
         <div>
           <label htmlFor="fourthOption">Enter the fourth option:</label>
           <input
@@ -99,11 +141,14 @@ export default function CreateRiddlePage() {
             type="text"
             value={formData.fourthOption}
             onChange={handleChange}
+            required
           />
         </div>
-
-        <button type="submit">Submit</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Loading..." : "Submit"}
+        </button>
       </form>
-    </>
+      {error && <p>{error}</p>}
+    </div>
   );
 }
