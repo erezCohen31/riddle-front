@@ -1,0 +1,16 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 100%;
+  background: linear-gradient(135deg, #ffa94d, #ff7f50);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  color: #fff;
+}
