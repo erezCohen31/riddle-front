@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { RoleContext } from "../contexts/Player.context";
 import { useNavigate } from "react-router";
+import "../style/MainMenu.css";
 
 export default function MainMenuPage() {
   const context = useContext(RoleContext);
