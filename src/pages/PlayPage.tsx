@@ -1,4 +1,6 @@
 import { useState } from "react";
+import "../style/PlayPage.css";
+import { useNavigate } from "react-router";
 
 const riddles = [
   {
@@ -53,6 +55,7 @@ export default function PlayPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [finished, setFinished] = useState(false);
   const [correct, setCorrect] = useState(true);
+  const navigate = useNavigate();
 
   const handleAnswer = (choice: string) => {
     const currentRiddle = riddles[currentIndex];
@@ -71,6 +74,9 @@ export default function PlayPage() {
   };
 
   if (finished) {
+    setTimeout(() => {
+      navigate("/main-menu");
+    }, 3000);
     return (
       <div>
         <h2>Finished</h2>
@@ -82,10 +88,10 @@ export default function PlayPage() {
   const riddle = riddles[currentIndex];
 
   return (
-    <div>
+    <div className="container-game">
       <h2>Question {currentIndex + 1}</h2>
       <p>{riddle.taskDescription}</p>
-      <div>
+      <div className="container-riddle">
         {riddle.choices.map((choice) => (
           <button key={choice} onClick={() => handleAnswer(choice)}>
             {choice}

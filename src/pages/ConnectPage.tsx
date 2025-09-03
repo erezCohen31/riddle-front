@@ -47,7 +47,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="connect-page">
+    <div className="container-game">
       <h1>Welcome to Riddle Game</h1>
       <form className="connect-form" onSubmit={handleSubmit}>
         <div>

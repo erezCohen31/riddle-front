@@ -8,7 +8,7 @@ const players = [
 
 export default function ScorePage() {
   return (
-    <>
+    <div className="container-game">
       <h2>Score Page</h2>
       <table>
         <thead>
@@ -26,6 +26,6 @@ export default function ScorePage() {
           ))}
         </tbody>
       </table>
-    </>
+    </div>
   );
 }

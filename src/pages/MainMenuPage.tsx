@@ -13,8 +13,7 @@ export default function MainMenuPage() {
   }
 
   return (
-    <>
-      <div>MainMenuPage</div>
+    <div className="container-game">
       <h2>Welcome {player?.name}</h2>
       {player?.lowestTime && <p>your lowest time is {player.lowestTime}</p>}
       <button onClick={() => handleSubmit("play")}>To Play</button>
@@ -31,6 +30,6 @@ export default function MainMenuPage() {
           Manage Players
         </button>
       )}
-    </>
+    </div>
   );
 }
