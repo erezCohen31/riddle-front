@@ -1,0 +1,38 @@
+const API_URL = "https://riddle-game-api.onrender.com/api/players";
+
+async function handleResponse(response: Response) {
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.message || `HTTP error! status: ${response.status}`);
+  }
+  if (response.status === 204) {
+    return null;
+  }
+  const text = await response.text();
+  return text ? JSON.parse(text) : null;
+}
+
+export async function createOrFindPlayer(name: string, password: string) {
+  if (!name || typeof name !== "string" || name.trim().length === 0) {
+    throw new Error("Player name is required");
+  }
+  if (
+    !password ||
+    typeof password !== "string" ||
+    password.trim().length === 0
+  ) {
+    throw new Error("Player password is required");
+  }
+
+  const url = `${API_URL}/signuporlogin`;
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ name: name.trim(), password: password.trim() }),
+  });
+
+  return handleResponse(response);
+}

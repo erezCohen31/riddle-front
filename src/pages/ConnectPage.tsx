@@ -1,35 +1,53 @@
 import { useContext, useState } from "react";
-import type { ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router";
-import { RoleContext } from "../contexts/Role.context";
+import { RoleContext } from "../contexts/Player.context";
+import { createOrFindPlayer } from "../services/PlayerService";
+import "../style/ConnectPage.css";
+
+type FormState = {
+  username: string;
+  password: string;
+};
 
 export default function LoginPage() {
-  const [form, setForm] = useState({ username: "", password: "" });
-  const navigate = useNavigate();
+  const [form, setForm] = useState<FormState>({ username: "", password: "" });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
+  const navigate = useNavigate();
+  const { setPlayer } = useContext(RoleContext);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
-  const context = useContext(RoleContext);
 
-  const { setRole } = context;
-
-  const handleSubmit = (e: FormEvent) => {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setLoading(true);
+    try {
+      const { player, token } = await createOrFindPlayer(
+        form.username,
+        form.password
+      );
 
-    if (form.username === "admin" && form.password === "1234") {
-      navigate("/main-menu", {
-        state: { username: form.username },
-      });
-      setRole("admin");
-    } else {
-      alert("Login incorrect !");
+      localStorage.setItem("token", token);
+
+      setPlayer(player);
+
+      navigate("/main-menu");
+
+      setError("");
+    } catch (err: any) {
+      setError(err.message);
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
-  };
+  }
 
   return (
-    <div>
+    <div className="connect-page">
       <h1>Welcome to Riddle Game</h1>
       <form onSubmit={handleSubmit}>
         <div>
@@ -40,6 +58,7 @@ export default function LoginPage() {
             type="text"
             value={form.username}
             onChange={handleChange}
+            required
           />
         </div>
 
@@ -51,11 +70,16 @@ export default function LoginPage() {
             type="password"
             value={form.password}
             onChange={handleChange}
+            required
           />
         </div>
 
-        <button type="submit">Submit</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Loading..." : "Submit"}
+        </button>
       </form>
+
+      {error && <p>{error}</p>}
     </div>
   );
 }
