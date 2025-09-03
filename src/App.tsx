@@ -2,7 +2,7 @@ import "./App.css";
 import ConnectPage from "./pages/ConnectPage";
 import { BrowserRouter, Routes, Route } from "react-router";
 import MainMenuPage from "./pages/MainMenuPage.tsx";
-import { RoleProvider } from "./contexts/Role.context.tsx";
+import { PlayerProvider } from "./contexts//Player.context.tsx";
 import PlayPage from "./pages/PlayPage.tsx";
 import ScorePage from "./pages/ScorePage.tsx";
 import ModifyPlayerPage from "./pages/ModifyPlayerPage.tsx";
@@ -15,7 +15,7 @@ import ReadRiddlePage from "./pages/ReadRiddlePage.tsx";
 export default function App() {
   return (
     <BrowserRouter>
-      <RoleProvider>
+      <PlayerProvider>
         <Routes>
           <Route path="/" element={<ConnectPage />} />
           <Route path="/main-menu" element={<MainMenuPage />} />
@@ -29,7 +29,7 @@ export default function App() {
           </Route>
           <Route path="/manage-players" element={<ModifyPlayerPage />} />
         </Routes>
-      </RoleProvider>
+      </PlayerProvider>
     </BrowserRouter>
   );
 }
