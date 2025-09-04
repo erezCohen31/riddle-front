@@ -1,0 +1,58 @@
+/* Formulaire de score */
+.container-game .score-form {
+  margin-top: auto;
+  margin-bottom: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-family: Arial, sans-serif;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+thead {
+  background: linear-gradient(135deg, #ff7f50, #ff4d4d);
+  color: #fff;
+}
+
+thead th {
+  padding: 12px 15px;
+  font-size: 16px;
+  text-align: left;
+}
+
+tbody .player {
+  transition: background 0.3s, transform 0.2s;
+  cursor: default;
+}
+
+tbody .player:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+tbody .player:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  transform: translateX(5px);
+}
+
+tbody td {
+  padding: 12px 15px;
+  font-size: 14px;
+  color: #fff;
+}
+
+.current-player {
+  background-color: rgba(227, 76, 76, 0.35);
+  font-weight: bold;
+  transform: translateX(5px);
+  transition: all 0.3s;
+}
