@@ -66,3 +66,19 @@ export async function getRiddleById(
   });
   return await handleResponse(response);
 }
+
+export async function updateRiddle(
+  id: number,
+  riddleData: Object,
+  token: string
+) {
+  const response = await fetch(`${API_URL}/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(riddleData),
+  });
+  return await handleResponse(response);
+}
