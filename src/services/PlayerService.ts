@@ -53,3 +53,18 @@ export async function updateTime(id: number, time: number, token: string) {
 
   return await handleResponse(response);
 }
+
+export async function getLeaderboard(limit: number, token: string) {
+  if (isNaN(limit) || limit <= 0) {
+    limit = 10;
+  }
+
+  const response = await fetch(`${API_URL}/leaderboard/${limit}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return await handleResponse(response);
+}
