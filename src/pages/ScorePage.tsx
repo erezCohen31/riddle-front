@@ -40,7 +40,7 @@ export default function ScorePage() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [count, token]);
+  }, [count]);
 
   return (
     <div className="container-game">
