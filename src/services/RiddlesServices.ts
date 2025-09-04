@@ -82,3 +82,13 @@ export async function updateRiddle(
   });
   return await handleResponse(response);
 }
+
+export async function deleteRiddle(id: number, token: string) {
+  const response = await fetch(`${API_URL}/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return await handleResponse(response);
+}
