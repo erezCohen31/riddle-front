@@ -1,61 +1,42 @@
-import { useState } from "react";
+import { useContext, useEffect, useState, type FormEvent } from "react";
 import "../style/PlayPage.css";
 import { useNavigate } from "react-router";
-
-const riddles = [
-  {
-    _id: "6878c3580f3555c45d6a5b24",
-    id: 1,
-    name: "Easy Math",
-    taskDescription: "What is 5 + 3?",
-    correctAnswer: "8",
-    choices: ["7", "8", "9", "6"],
-  },
-  {
-    _id: "7a12c4580f3555c45d6a5c90",
-    id: 2,
-    name: "General Knowledge",
-    taskDescription: "What is the capital of France?",
-    correctAnswer: "Paris",
-    choices: ["Rome", "Madrid", "Paris", "Berlin"],
-  },
-  {
-    _id: "8b93d1580f3555c45d6a5d31",
-    id: 3,
-    name: "Science",
-    taskDescription: "Which planet is known as the Red Planet?",
-    correctAnswer: "Mars",
-    choices: ["Venus", "Mars", "Jupiter", "Saturn"],
-  },
-  {
-    _id: "9c04e2580f3555c45d6a5d92",
-    id: 4,
-    name: "History",
-    taskDescription: "Who was the first president of the United States?",
-    correctAnswer: "George Washington",
-    choices: [
-      "Abraham Lincoln",
-      "George Washington",
-      "Thomas Jefferson",
-      "John Adams",
-    ],
-  },
-  {
-    _id: "af15f3580f3555c45d6a5e12",
-    id: 5,
-    name: "Logic",
-    taskDescription:
-      "If all bloops are razzies and all razzies are lazzies, are all bloops definitely lazzies?",
-    correctAnswer: "Yes",
-    choices: ["Yes", "No", "Maybe", "Not enough information"],
-  },
-];
+import { getNumOfRiddles } from "../services/RiddlesServices";
+import type { Riddle } from "../interface/RiddleType";
+import { RoleContext } from "../contexts/Player.context";
+import { updateTime } from "../services/PlayerService";
 
 export default function PlayPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [finished, setFinished] = useState(false);
   const [correct, setCorrect] = useState(true);
+  const [riddles, setRiddles] = useState<Riddle[]>([]);
+  const [count, setCount] = useState("");
+  const [enterCount, setEnterCount] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const context = useContext(RoleContext);
+  const { player } = context;
+
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCount(e.target.value);
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const data = await getNumOfRiddles(Number(count), token || "");
+      setRiddles(data);
+      if (data.length > 0) setEnterCount(true);
+    } catch (err) {
+      console.error("Error fetching riddles:", err);
+    }
+  };
 
   const handleAnswer = (choice: string) => {
     const currentRiddle = riddles[currentIndex];
@@ -73,32 +54,73 @@ export default function PlayPage() {
     }
   };
 
+  useEffect(() => {
+    if (riddles.length > 0) {
+      setStartTime(Date.now());
+      console.log("go");
+    }
+  }, [riddles]);
+
+  useEffect(() => {
+    if (finished && startTime !== null) {
+      const sendTime = async () => {
+        const elapsed = (Date.now() - startTime) / 1000;
+        const average = elapsed / riddles.length;
+        const intValue = Math.round(average);
+        setTimeout(() => navigate("/main-menu"), 3000);
+        if (player && intValue < player.lowestTime) {
+          player.lowestTime = intValue;
+        }
+        await updateTime(Number(player?.id), intValue, token || "");
+      };
+      sendTime();
+    }
+  }, [finished]);
+
   if (finished) {
-    setTimeout(() => {
-      navigate("/main-menu");
-    }, 3000);
     return (
       <div>
         <h2>Finished</h2>
-        <p></p>
       </div>
     );
   }
 
-  const riddle = riddles[currentIndex];
-
   return (
     <div className="container-game">
-      <h2>Question {currentIndex + 1}</h2>
-      <p>{riddle.taskDescription}</p>
-      <div className="container-riddle">
-        {riddle.choices.map((choice) => (
-          <button key={choice} onClick={() => handleAnswer(choice)}>
-            {choice}
-          </button>
-        ))}
-      </div>
-      {correct === false && <p>Wrong answer </p>}
+      {!enterCount ? (
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="countriddle"></label>
+            <input
+              id="countriddle"
+              name="countriddle"
+              type="number"
+              min={1}
+              value={count}
+              onChange={handleChange}
+              placeholder="Enter count of riddles"
+            />
+          </div>
+          <button type="submit" disabled={loading}>
+            {loading ? "Loading..." : "Submit"}
+          </button>{" "}
+        </form>
+      ) : (
+        enterCount && (
+          <>
+            <h2>Question {currentIndex + 1}</h2>
+            <p>{riddles[currentIndex].taskDescription}</p>
+            <div className="container-riddle">
+              {riddles[currentIndex].choices.map((choice) => (
+                <button key={choice} onClick={() => handleAnswer(choice)}>
+                  {choice}
+                </button>
+              ))}
+            </div>
+            {!correct && <p>Wrong answer </p>}
+          </>
+        )
+      )}
     </div>
   );
 }

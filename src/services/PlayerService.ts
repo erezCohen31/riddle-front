@@ -36,3 +36,35 @@ export async function createOrFindPlayer(name: string, password: string) {
 
   return handleResponse(response);
 }
+
+export async function updateTime(id: number, time: number, token: string) {
+  if (!id || !time || isNaN(time)) {
+    throw new Error("Valid player ID and time are required");
+  }
+
+  const response = await fetch(`${API_URL}/${id}/time`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ time: Number(time) }),
+  });
+
+  return await handleResponse(response);
+}
+
+export async function getLeaderboard(limit: number, token: string) {
+  if (isNaN(limit) || limit <= 0) {
+    limit = 10;
+  }
+
+  const response = await fetch(`${API_URL}/leaderboard/${limit}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return await handleResponse(response);
+}
