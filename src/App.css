@@ -41,7 +41,11 @@ input::placeholder {
   font-style: italic;
   text-align: center;
 }
-
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 button {
   width: 220px;
   padding: 12px 20px;
