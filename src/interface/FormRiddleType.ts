@@ -1,9 +1,9 @@
 export interface FormRiddle {
-  riddlename: string;
-  question: string;
+  name: string;
+  taskDescription: string;
   correctAnswer: string;
-  firstOption: string;
-  secondOption: string;
-  thirdOption: string;
-  fourthOption: string;
+  choice1: string;
+  choice2: string;
+  choice3: string;
+  choice4: string;
 }
