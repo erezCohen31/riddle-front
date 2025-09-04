@@ -1,68 +1,64 @@
-const riddles = [
-  {
-    _id: "6878c3580f3555c45d6a5b24",
-    id: 1,
-    name: "Easy Math",
-    taskDescription: "What is 5 + 3?",
-    correctAnswer: "8",
-    choices: ["7", "8", "9", "6"],
-  },
-  {
-    _id: "7a12c4580f3555c45d6a5c90",
-    id: 2,
-    name: "General Knowledge",
-    taskDescription: "What is the capital of France?",
-    correctAnswer: "Paris",
-    choices: ["Rome", "Madrid", "Paris", "Berlin"],
-  },
-  {
-    _id: "8b93d1580f3555c45d6a5d31",
-    id: 3,
-    name: "Science",
-    taskDescription: "Which planet is known as the Red Planet?",
-    correctAnswer: "Mars",
-    choices: ["Venus", "Mars", "Jupiter", "Saturn"],
-  },
-  {
-    _id: "9c04e2580f3555c45d6a5d92",
-    id: 4,
-    name: "History",
-    taskDescription: "Who was the first president of the United States?",
-    correctAnswer: "George Washington",
-    choices: [
-      "Abraham Lincoln",
-      "George Washington",
-      "Thomas Jefferson",
-      "John Adams",
-    ],
-  },
-  {
-    _id: "af15f3580f3555c45d6a5e12",
-    id: 5,
-    name: "Logic",
-    taskDescription:
-      "If all bloops are razzies and all razzies are lazzies, are all bloops definitely lazzies?",
-    correctAnswer: "Yes",
-    choices: ["Yes", "No", "Maybe", "Not enough information"],
-  },
-];
-export default function ReadRiddlePage() {
-  return (
-    <>
-      <div>ReadRiddlePage</div>
+import { useState } from "react";
+import type { Riddle } from "../interface/RiddleType";
+import { getAllRiddles, getRiddleById } from "../services/RiddlesServices";
+import "../style/ReadRiddlePage.css";
 
-      {riddles.map((riddle) => (
-        <div key={riddle._id}>
-          <p>{riddle.name}</p>
-          <p>{riddle.taskDescription}</p>
-          <p>{riddle.correctAnswer}</p>
-          <ul>
-            {riddle.choices.map((choice) => (
-              <li>{choice}</li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </>
+export default function ReadRiddlePage() {
+  const [riddles, setRiddles] = useState<Riddle[]>([]);
+  const [idRiddle, setIdRiddle] = useState<string>("");
+  const token = localStorage.getItem("token");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIdRiddle(e.target.value);
+  };
+
+  const handleFetch = async () => {
+    try {
+      if (idRiddle) {
+        const data = await getRiddleById(Number(idRiddle), token || "");
+        if (data) {
+          setRiddles([data]);
+        }
+      } else {
+        const data = await getAllRiddles(token || "");
+        if (data) {
+          setRiddles(data);
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return (
+    <div className="container-game">
+      <div className="form-read">
+        <label htmlFor="idriddle"></label>
+        <input
+          id="idriddle"
+          name="idriddle"
+          type="text"
+          value={idRiddle}
+          onChange={handleChange}
+          placeholder="Enter id of the riddle or empty to all "
+        />
+        <button onClick={handleFetch}>Sumbit</button>
+      </div>
+
+      <div className="container-riddles">
+        {riddles.map((riddle) => (
+          <div className="read-riddle" key={riddle.id}>
+            <p>Name : {riddle.name}</p>
+            <p>Description : {riddle.taskDescription}</p>
+            <p>Answer :{riddle.correctAnswer}</p>
+            <ul>
+              {riddle.choices.map((choice, index) => (
+                <li key={index}>{choice}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

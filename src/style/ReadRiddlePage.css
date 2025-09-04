@@ -1,0 +1,15 @@
+.container-riddles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+.read-riddle {
+  border: 2px solid #ff7f50;
+  padding: 15px;
+  border-radius: 15px;
+}
+
+.form-read {
+  display: flex;
+  gap: 10px;
+}
