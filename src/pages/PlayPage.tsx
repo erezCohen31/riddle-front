@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, type FormEvent } from "react";
+import { useContext, useEffect, useRef, useState, type FormEvent } from "react";
 import "../style/PlayPage.css";
 import { useNavigate } from "react-router";
 import { getNumOfRiddles } from "../services/RiddlesServices";
@@ -14,7 +14,9 @@ export default function PlayPage() {
   const [count, setCount] = useState("");
   const [enterCount, setEnterCount] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [startTime, setStartTime] = useState<number | null>(null);
+
+  const startTimeRef = useRef<number | null>(null);
+
   const context = useContext(RoleContext);
   const { player } = context;
 
@@ -58,15 +60,15 @@ export default function PlayPage() {
 
   useEffect(() => {
     if (riddles.length > 0) {
-      setStartTime(Date.now());
+      startTimeRef.current = Date.now();
       console.log("go");
     }
   }, [riddles]);
 
   useEffect(() => {
-    if (finished && startTime !== null) {
+    if (finished && startTimeRef.current !== null) {
       const sendTime = async () => {
-        const elapsed = (Date.now() - startTime) / 1000;
+        const elapsed = (Date.now() - startTimeRef.current!) / 1000;
         const average = elapsed / riddles.length;
         const intValue = Math.round(average);
         setTimeout(() => navigate("/main-menu"), 3000);
@@ -108,20 +110,18 @@ export default function PlayPage() {
           </button>{" "}
         </form>
       ) : (
-        enterCount && (
-          <>
-            <h2>Question {currentIndex + 1}</h2>
-            <p>{riddles[currentIndex].taskDescription}</p>
-            <div className="container-riddle">
-              {riddles[currentIndex].choices.map((choice) => (
-                <button key={choice} onClick={() => handleAnswer(choice)}>
-                  {choice}
-                </button>
-              ))}
-            </div>
-            {!correct && <p>Wrong answer </p>}
-          </>
-        )
+        <>
+          <h2>Question {currentIndex + 1}</h2>
+          <p>{riddles[currentIndex].taskDescription}</p>
+          <div className="container-riddle">
+            {riddles[currentIndex].choices.map((choice) => (
+              <button key={choice} onClick={() => handleAnswer(choice)}>
+                {choice}
+              </button>
+            ))}
+          </div>
+          {!correct && <p>Wrong answer </p>}
+        </>
       )}
     </div>
   );
