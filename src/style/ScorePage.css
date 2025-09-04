@@ -1,4 +1,3 @@
-/* Formulaire de score */
 .container-game .score-form {
   margin-top: auto;
   margin-bottom: auto;
@@ -7,7 +6,6 @@
   align-items: center;
 }
 
-/* Table */
 table {
   width: 100%;
   border-collapse: collapse;

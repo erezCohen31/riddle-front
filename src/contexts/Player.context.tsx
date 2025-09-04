@@ -1,4 +1,4 @@
-import { createContext, useState, type ReactNode } from "react";
+import { createContext, useEffect, useState, type ReactNode } from "react";
 import type { Player } from "../interface/PlayerType";
 
 export const RoleContext = createContext<{
@@ -12,6 +12,22 @@ export const RoleContext = createContext<{
 export function PlayerProvider({ children }: { children: ReactNode }) {
   const [player, setPlayer] = useState<Player | null>(null);
 
+  useEffect(() => {
+    if (!player) {
+      const storedPlayer = localStorage.getItem("player");
+      if (storedPlayer) {
+        setPlayer(JSON.parse(storedPlayer));
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (player) {
+      localStorage.setItem("player", JSON.stringify(player));
+    } else {
+      localStorage.removeItem("player");
+    }
+  }, [player]);
   return (
     <RoleContext.Provider value={{ player, setPlayer }}>
       {children}
