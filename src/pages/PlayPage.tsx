@@ -31,8 +31,10 @@ export default function PlayPage() {
 
     try {
       const data = await getNumOfRiddles(Number(count), token || "");
-      setRiddles(data);
-      if (data.length > 0) setEnterCount(true);
+      if (data && data.length > 0) {
+        setRiddles(data);
+        setEnterCount(true);
+      }
     } catch (err) {
       console.error("Error fetching riddles:", err);
     }
