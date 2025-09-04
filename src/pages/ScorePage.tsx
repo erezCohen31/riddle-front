@@ -1,4 +1,4 @@
-import { useContext, useState, type FormEvent } from "react";
+import { useContext, useEffect, useState, type FormEvent } from "react";
 import { RoleContext } from "../contexts/Player.context";
 import { getLeaderboard } from "../services/PlayerService";
 import type { PlayerScore } from "../interface/PlayerScoreTypre";
@@ -27,10 +27,25 @@ export default function ScorePage() {
       console.error("Error fetching riddles:", err);
     }
   };
+  useEffect(() => {
+    if (!count) return;
+
+    const timer = setTimeout(async () => {
+      try {
+        const data = await getLeaderboard(Number(count), token || "");
+        setPlayersScore(data);
+      } catch (err) {
+        console.error("Error fetching riddles:", err);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [count]);
+
   return (
     <div className="container-game">
       <h2>Score Page</h2>
-      <form className="score-form" onSubmit={handleSubmit}>
+      <form className="score-form">
         <div>
           <label htmlFor="countriddle"></label>
           <input
@@ -40,10 +55,10 @@ export default function ScorePage() {
             min={1}
             value={count}
             onChange={handleChange}
+            onBlur={handleSubmit}
             placeholder="Type a number of players"
           />
         </div>
-        <button type="submit"> submit</button>
       </form>
       {playersScore.length > 0 && (
         <table>

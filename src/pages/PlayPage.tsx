@@ -81,17 +81,16 @@ export default function PlayPage() {
     return (
       <div>
         <h2>Finished</h2>
-        <p>Votre temps a été enregistré !</p>
       </div>
     );
   }
 
   return (
-    <>
+    <div className="container-game">
       {!enterCount ? (
         <form onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="countriddle">Enter count of the riddles:</label>
+            <label htmlFor="countriddle"></label>
             <input
               id="countriddle"
               name="countriddle"
@@ -99,7 +98,7 @@ export default function PlayPage() {
               min={1}
               value={count}
               onChange={handleChange}
-              placeholder="Type a number"
+              placeholder="Enter count of riddles"
             />
           </div>
           <button type="submit" disabled={loading}>
@@ -108,7 +107,7 @@ export default function PlayPage() {
         </form>
       ) : (
         enterCount && (
-          <div className="container-game">
+          <>
             <h2>Question {currentIndex + 1}</h2>
             <p>{riddles[currentIndex].taskDescription}</p>
             <div className="container-riddle">
@@ -119,9 +118,9 @@ export default function PlayPage() {
               ))}
             </div>
             {!correct && <p>Wrong answer </p>}
-          </div>
+          </>
         )
       )}
-    </>
+    </div>
   );
 }
