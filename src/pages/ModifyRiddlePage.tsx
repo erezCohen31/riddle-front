@@ -1,38 +1,50 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { RoleContext } from "../contexts/Player.context";
-import { Outlet, useNavigate } from "react-router";
+import { Outlet, useLocation, useNavigate } from "react-router";
+import "../style/ModifyRiddlesMenu.css";
 
 export default function ModifyRiddlePage() {
   const { player } = useContext(RoleContext);
+  const [isExpend, setIsExpend] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname.endsWith("manage-riddles")) {
+      setIsExpend(false);
+    }
+  }, [location]);
 
   const handleNavigate = (path: string) => {
     navigate(path);
+    setIsExpend(true);
   };
 
   return (
     <div className="container-game">
       <h1>Modify Riddle Page</h1>
-
-      {(player?.role === "user" || player?.role === "admin") && (
-        <>
-          <button onClick={() => handleNavigate("add")}>
-            Create a new Riddle
-          </button>
-          <button onClick={() => handleNavigate("read")}>
-            Read all Riddles
-          </button>
-        </>
-      )}
-
-      {player?.role === "admin" && (
-        <>
-          <button onClick={() => handleNavigate("edit")}>Change Riddle</button>
-          <button onClick={() => handleNavigate("delete")}>
-            Delete Riddle
-          </button>
-        </>
-      )}
+      <nav className={!isExpend ? "navbar" : "expend-navbar"}>
+        {(player?.role === "user" || player?.role === "admin") && (
+          <>
+            <button onClick={() => handleNavigate("add")}>
+              Create a new Riddle
+            </button>
+            <button onClick={() => handleNavigate("read")}>
+              Read all Riddles
+            </button>
+          </>
+        )}
+        {player?.role === "admin" && (
+          <>
+            <button onClick={() => handleNavigate("edit")}>
+              Change Riddle
+            </button>
+            <button onClick={() => handleNavigate("delete")}>
+              Delete Riddle
+            </button>
+          </>
+        )}
+      </nav>
 
       <Outlet />
     </div>

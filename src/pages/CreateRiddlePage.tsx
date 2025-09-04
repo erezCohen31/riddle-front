@@ -64,83 +64,89 @@ export default function CreateRiddlePage() {
   };
 
   return (
-    <div className="connect-page">
-      <div>CreateRiddlePage</div>
+    <div className="container-game">
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="riddlename">Enter name of the riddle:</label>
+          <label htmlFor="riddlename"></label>
           <input
             id="riddlename"
             name="riddlename"
             type="text"
             value={formData.riddlename}
             onChange={handleChange}
+            placeholder="Enter name of the riddle"
             required
           />
         </div>
         <div>
-          <label htmlFor="question">Enter the question:</label>
+          <label htmlFor="question"></label>
           <input
             id="question"
             name="question"
             type="text"
             value={formData.question}
             onChange={handleChange}
+            placeholder="Enter the question"
             required
           />
         </div>
         <div>
-          <label htmlFor="correctAnswer">Enter the correct answer:</label>
+          <label htmlFor="correctAnswer"></label>
           <input
             id="correctAnswer"
             name="correctAnswer"
             type="text"
             value={formData.correctAnswer}
             onChange={handleChange}
+            placeholder="Enter the correct answer"
             required
           />
         </div>
         <div>
-          <label htmlFor="firstOption">Enter the first option:</label>
+          <label htmlFor="firstOption"></label>
           <input
             id="firstOption"
             name="firstOption"
             type="text"
             value={formData.firstOption}
             onChange={handleChange}
+            placeholder="Enter the first option"
             required
           />
         </div>
         <div>
-          <label htmlFor="secondOption">Enter the second option:</label>
+          <label htmlFor="secondOption"></label>
           <input
             id="secondOption"
             name="secondOption"
             type="text"
             value={formData.secondOption}
             onChange={handleChange}
+            placeholder="Enter the second option"
             required
           />
         </div>
         <div>
-          <label htmlFor="thirdOption">Enter the third option:</label>
+          <label htmlFor="thirdOption"></label>
           <input
             id="thirdOption"
             name="thirdOption"
             type="text"
             value={formData.thirdOption}
             onChange={handleChange}
+            placeholder="Enter the third option"
             required
           />
         </div>
         <div>
-          <label htmlFor="fourthOption">Enter the fourth option:</label>
+          <label htmlFor="fourthOption"></label>
           <input
             id="fourthOption"
             name="fourthOption"
             type="text"
             value={formData.fourthOption}
             onChange={handleChange}
+            placeholder="Enter the fourth option"
             required
           />
         </div>
