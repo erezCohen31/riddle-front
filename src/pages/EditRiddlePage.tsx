@@ -1,101 +1,138 @@
-import { useState, type FormEvent } from "react";
-
-const riddles = [
-  {
-    _id: "6878c3580f3555c45d6a5b24",
-    id: 1,
-    name: "Easy Math",
-    taskDescription: "What is 5 + 3?",
-    correctAnswer: "8",
-    choices: ["7", "8", "9", "6"],
-  },
-  {
-    _id: "7a12c4580f3555c45d6a5c90",
-    id: 2,
-    name: "General Knowledge",
-    taskDescription: "What is the capital of France?",
-    correctAnswer: "Paris",
-    choices: ["Rome", "Madrid", "Paris", "Berlin"],
-  },
-  {
-    _id: "8b93d1580f3555c45d6a5d31",
-    id: 3,
-    name: "Science",
-    taskDescription: "Which planet is known as the Red Planet?",
-    correctAnswer: "Mars",
-    choices: ["Venus", "Mars", "Jupiter", "Saturn"],
-  },
-  {
-    _id: "9c04e2580f3555c45d6a5d92",
-    id: 4,
-    name: "History",
-    taskDescription: "Who was the first president of the United States?",
-    correctAnswer: "George Washington",
-    choices: [
-      "Abraham Lincoln",
-      "George Washington",
-      "Thomas Jefferson",
-      "John Adams",
-    ],
-  },
-  {
-    _id: "af15f3580f3555c45d6a5e12",
-    id: 5,
-    name: "Logic",
-    taskDescription:
-      "If all bloops are razzies and all razzies are lazzies, are all bloops definitely lazzies?",
-    correctAnswer: "Yes",
-    choices: ["Yes", "No", "Maybe", "Not enough information"],
-  },
-];
+import { useRef, useState } from "react";
+import type { Riddle } from "../interface/RiddleType";
+import { getRiddleById, updateRiddle } from "../services/RiddlesServices";
+import "../style/ReadRiddlePage.css";
+import { useNavigate } from "react-router";
+import InputField from "../components/InputField.tsx";
 
 export default function EditRiddlePage() {
-  const [id, setID] = useState("");
-  const [selectedRiddle, setSelectedRiddle] = useState<
-    (typeof riddles)[0] | null
-  >(null);
+  const [riddle, setRiddle] = useState<Riddle | null>(null);
+  const idRiddleRef = useRef<HTMLInputElement>(null);
+  const [fieldToEdit, setFieldToEdit] = useState<string>("");
+  const [newValue, setNewValue] = useState<string>("");
+  const [choices, setChoices] = useState<string[]>([]);
+  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
+  const fields = ["name", "taskDescription", "correctAnswer", "choices"];
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setID(e.target.value);
+  const handleFetch = async () => {
+    try {
+      if (idRiddleRef.current?.value) {
+        const data = await getRiddleById(
+          Number(idRiddleRef.current.value),
+          token || ""
+        );
+        if (data) {
+          setRiddle(data);
+          setFieldToEdit("");
+          setNewValue("");
+          setChoices(data.choices || []);
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    const foundRiddle = riddles.find((r) => r.id === Number(id));
-    setSelectedRiddle(foundRiddle || null);
+    if (!riddle) return;
+
+    let updated: Riddle;
+
+    if (fieldToEdit === "choices") {
+      updated = { ...riddle, choices };
+    } else if (fieldToEdit && newValue) {
+      updated = { ...riddle, [fieldToEdit]: newValue };
+    } else {
+      return;
+    }
+
+    try {
+      const result = await updateRiddle(riddle.id, updated, token || "");
+      setRiddle(result as Riddle);
+      navigate("/main-menu");
+    } catch (err) {
+      console.error("Erreur update:", err);
+    }
+  };
+
+  const handleChoiceChange = (index: number, value: string) => {
+    const newChoices = [...choices];
+    newChoices[index] = value;
+    setChoices(newChoices);
   };
 
   return (
-    <>
-      <div>EditRiddlePage</div>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="riddleid">Enter id of the riddle:</label>
-          <input
-            id="riddleid"
-            name="riddleid"
-            type="text"
-            value={id}
-            onChange={handleChange}
-          />
-        </div>
+    <div>
+      <h2>Edit Riddle Page</h2>
 
-        <button type="submit">Submit</button>
-      </form>
+      <div>
+        <input type="text" ref={idRiddleRef} placeholder="Enter ID" />
+        <button type="button" onClick={handleFetch}>
+          Sumbit
+        </button>
+      </div>
 
-      {selectedRiddle && (
+      {riddle && (
         <div>
-          <p>Name:{selectedRiddle.name}</p>
-          <p>Question: {selectedRiddle.taskDescription}</p>
-          <p>Answer: {selectedRiddle.correctAnswer}</p>
-          <p>Choices:</p>
-          <ul>
-            {selectedRiddle.choices.map((choice, index) => (
-              <li key={index}>{choice}</li>
-            ))}
-          </ul>
+          <div className="read-riddle">
+            <p>Name: {riddle.name}</p>
+            <p>Description: {riddle.taskDescription}</p>
+            <p>Answer: {riddle.correctAnswer}</p>
+            <ul>
+              {riddle.choices?.map((c, i) => (
+                <li key={i}>{c}</li>
+              ))}
+            </ul>
+          </div>
+
+          <form onSubmit={handleUpdate}>
+            <p>Chosse the field to edit :</p>
+
+            <div>
+              {fields.map((field) => (
+                <InputField
+                  key={field}
+                  value={field}
+                  fieldToEdit={fieldToEdit}
+                  setFieldToEdit={setFieldToEdit}
+                />
+              ))}
+            </div>
+
+            {fieldToEdit && fieldToEdit !== "choices" && (
+              <div>
+                <input
+                  type="text"
+                  value={newValue}
+                  onChange={(e) => setNewValue(e.target.value)}
+                  placeholder={`New value for ${fieldToEdit}`}
+                />
+              </div>
+            )}
+
+            {fieldToEdit === "choices" && (
+              <div>
+                <p>Modify the choices :</p>
+                {choices.map((choice, index) => (
+                  <div key={index}>
+                    <input
+                      type="text"
+                      value={choice}
+                      onChange={(e) =>
+                        handleChoiceChange(index, e.target.value)
+                      }
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <button type="submit">Update</button>
+          </form>
         </div>
       )}
-    </>
+    </div>
   );
 }

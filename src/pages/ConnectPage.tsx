@@ -32,11 +32,8 @@ export default function LoginPage() {
       );
 
       localStorage.setItem("token", token);
-
       setPlayer(player);
-
       navigate("/main-menu");
-
       setError("");
     } catch (err: any) {
       setError(err.message);
