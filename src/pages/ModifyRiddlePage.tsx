@@ -34,16 +34,6 @@ export default function ModifyRiddlePage() {
             </button>
           </>
         )}
-        {player?.role === "admin" && (
-          <>
-            <button onClick={() => handleNavigate("edit")}>
-              Change Riddle
-            </button>
-            <button onClick={() => handleNavigate("delete")}>
-              Delete Riddle
-            </button>
-          </>
-        )}
       </nav>
 
       <Outlet />

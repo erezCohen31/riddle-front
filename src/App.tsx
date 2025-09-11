@@ -9,7 +9,6 @@ import ModifyPlayerPage from "./pages/ModifyPlayerPage.tsx";
 import ModifyRiddlePage from "./pages/ModifyRiddlePage.tsx";
 import CreateRiddlePage from "./pages/CreateRiddlePage.tsx";
 import EditRiddlePage from "./pages/EditRiddlePage.tsx";
-import DeleteRiddlePage from "./pages/DeleteRiddlePage.tsx";
 import ReadRiddlePage from "./pages/ReadRiddlePage.tsx";
 import Header from "./components/Header.tsx";
 import Navbar from "./components/Navbar.tsx";
@@ -28,9 +27,8 @@ export default function App() {
         <Route path="/play" element={<PlayPage />} />
         <Route path="/score" element={<ScorePage />} />
         <Route path="/manage-riddles" element={<ModifyRiddlePage />}>
-          <Route path="edit" element={<EditRiddlePage />} />
+          <Route path="edit/:id" element={<EditRiddlePage />} />
           <Route path="add" element={<CreateRiddlePage />} />
-          <Route path="delete" element={<DeleteRiddlePage />} />
           <Route path="read" element={<ReadRiddlePage />} />
         </Route>
         <Route path="/manage-players" element={<ModifyPlayerPage />} />
