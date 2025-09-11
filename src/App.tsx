@@ -2,7 +2,7 @@ import "./App.css";
 import ConnectPage from "./pages/ConnectPage";
 import { BrowserRouter, Routes, Route } from "react-router";
 import MainMenuPage from "./pages/MainMenuPage.tsx";
-import { PlayerProvider, RoleContext } from "./contexts//Player.context.tsx";
+import { RoleContext } from "./contexts//Player.context.tsx";
 import PlayPage from "./pages/PlayPage.tsx";
 import ScorePage from "./pages/ScorePage.tsx";
 import ModifyPlayerPage from "./pages/ModifyPlayerPage.tsx";
@@ -20,7 +20,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <Header></Header>
+      <Header />
       {player && <Navbar />}
       <Routes>
         <Route path="/" element={<ConnectPage />} />
