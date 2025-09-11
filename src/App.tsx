@@ -11,10 +11,13 @@ import CreateRiddlePage from "./pages/CreateRiddlePage.tsx";
 import EditRiddlePage from "./pages/EditRiddlePage.tsx";
 import DeleteRiddlePage from "./pages/DeleteRiddlePage.tsx";
 import ReadRiddlePage from "./pages/ReadRiddlePage.tsx";
+import Header from "./components/Header.tsx";
 
 export default function App() {
   return (
     <BrowserRouter>
+      <Header></Header>
+
       <PlayerProvider>
         <Routes>
           <Route path="/" element={<ConnectPage />} />
