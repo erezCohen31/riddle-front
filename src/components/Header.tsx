@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { RoleContext } from "../contexts/Player.context";
 export default function Header() {
   const navigate = useNavigate();
-  const { setPlayer } = useContext(RoleContext);
+  const { player, setPlayer } = useContext(RoleContext);
   return (
     <div className="header">
       <img
@@ -13,15 +13,17 @@ export default function Header() {
         alt="riddle logo"
       />
       <h1>Riddle Game</h1>
-      <button
-        onClick={() => {
-          setPlayer(null);
-          localStorage.clear();
-          navigate("/");
-        }}
-      >
-        exit
-      </button>
+      {player && (
+        <button
+          onClick={() => {
+            setPlayer(null);
+            localStorage.clear();
+            navigate("/");
+          }}
+        >
+          exit
+        </button>
+      )}
     </div>
   );
 }
