@@ -1,56 +1,71 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Riddle } from "../interface/RiddleType";
-import { getAllRiddles, getRiddleById } from "../services/RiddlesServices";
+import { getAllRiddles } from "../services/RiddlesServices";
 import "../style/ReadRiddlePage.css";
+import { useNavigate } from "react-router";
 
 export default function ReadRiddlePage() {
   const [riddles, setRiddles] = useState<Riddle[]>([]);
   const [idRiddle, setIdRiddle] = useState<string>("");
+  const [filteredRiddles, setFilteredRiddles] = useState<Riddle[]>([]);
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIdRiddle(e.target.value);
-  };
-
-  const handleFetch = async () => {
-    try {
-      if (idRiddle) {
-        const data = await getRiddleById(Number(idRiddle), token || "");
-        if (data) {
-          setRiddles([data]);
-        }
-      } else {
+  useEffect(() => {
+    const fetchAll = async () => {
+      try {
         const data = await getAllRiddles(token || "");
         if (data) {
           setRiddles(data);
+          setFilteredRiddles(data);
         }
+      } catch (err) {
+        console.error(err);
       }
-    } catch (err) {
-      console.error(err);
+    };
+    fetchAll();
+  }, [token]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setIdRiddle(value);
+
+    if (!value) {
+      setFilteredRiddles(riddles);
+    } else {
+      setFilteredRiddles(
+        riddles.filter((r) => r.id.toString().includes(value))
+      );
     }
   };
 
   return (
     <div className="container-game">
       <div className="form-read">
-        <label htmlFor="idriddle"></label>
         <input
           id="idriddle"
           name="idriddle"
           type="text"
           value={idRiddle}
           onChange={handleChange}
-          placeholder="Enter id of the riddle or empty to all "
+          placeholder="Enter id of the riddle or leave empty to see all"
         />
-        <button onClick={handleFetch}>Sumbit</button>
       </div>
 
       <div className="container-riddles">
-        {riddles.map((riddle) => (
-          <div className="read-riddle" key={riddle.id}>
-            <p>Name : {riddle.name}</p>
-            <p>Description : {riddle.taskDescription}</p>
-            <p>Answer :{riddle.correctAnswer}</p>
+        {filteredRiddles.map((riddle) => (
+          <div
+            onClick={() =>
+              navigate(`/manage-riddles/edit/${riddle.id}`, {
+                state: { riddle },
+              })
+            }
+            className="read-riddle"
+            key={riddle.id}
+          >
+            <p>Name: {riddle.name}</p>
+            <p>Description: {riddle.taskDescription}</p>
+            <p>Answer: {riddle.correctAnswer}</p>
             <ul>
               {riddle.choices.map((choice, index) => (
                 <li key={index}>{choice}</li>

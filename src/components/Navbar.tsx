@@ -35,9 +35,17 @@ export default function Navbar() {
               to="/manage-riddles"
               className={({ isActive }) => (isActive ? "active-link" : "")}
             >
-              Modufy Riddle
+              Modify Riddles
             </NavLink>
           ))}
+        {player?.role === "admin" && (
+          <NavLink
+            to="/manage-players"
+            className={({ isActive }) => (isActive ? "active-link" : "")}
+          >
+            Manage Players
+          </NavLink>
+        )}
       </nav>
     </div>
   );
